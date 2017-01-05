@@ -5,6 +5,7 @@
 // features
 // simply create json object to control all data such as text, speed, delete, newline, then iterate through so that the ideas are all that need to form rather than getting stuck in code
 // switch statement for each type of control, i.e. speed, delay, delete, type, newline
+// Random delay in between typed characters to simulate human interaction
 
 
 var consoleData = [
@@ -52,6 +53,7 @@ function consoleText(words, id, colors) {
 			letterCount += x;
 		}
 	}, 120);
+	
 	window.setInterval(function() {
 		if (visible === true) {
 			con.className = 'console-underscore hidden'
@@ -66,42 +68,115 @@ function consoleText(words, id, colors) {
 }
 
 var testData = [
+
 	{
 		'command': 'type',
-		'speed': 400,
-		'text': 'Hello  world'
+		'speed': 200,
+		'text': 'Hello world',
+		'complete': false
 	},
 	{
-		'command': 'newline'
+		'command': 'type',
+		'speed': 200,
+		'text': 'Go again',
+		'complete': false // use setInterval to repeatedly run until complete, then shift() to remove that item from the stack
 	}
 ]
 
 var consoleText2 = function(instructions) {
 	
-	$.each(instructions, function(index, value) {
-		var step = value;
-
-		switch(step['command']) {
-			case 'type':
+	var waiting = false;
+	
+	var flow = setInterval(function(){
+		
+		if (!waiting) {
 			
-				var outputString = step['text'].split("");
-				console.log(outputString);
-				for (var i = 0; i < outputString.length; i++) {
-					window.setInterval(function(){
-						var test = "3141234123412";
-						$('#text').append(test[i]);
-						//console.log(outputString[i]);
-					}, step['speed']);
-				}
-				
+			var step = instructions[0];
+						
+			switch(step['command']) {
+				case 'type':
+					if (!waiting) {
+						
+						waiting = true;
+						var outputString = step['text'].split("");
+						
+						var typeInterval = setInterval(function(){
+
+							$('#currentLine').append(outputString[0]);
+							outputString.shift(); // Remove first index of array, each letter as it is added.
+							
+							if (outputString.length == 0) { // If entire string has been appended, terminate interval.
+								clearInterval(typeInterval);
+								step['complete'] = true;
+								waiting = false;
+								instructions.shift();
+								
+								$('#currentLine').removeAttr('id');
+								var $consolePrefix = $('.console-container').find('.prefix').first();
+								$('.console-container').append("<div>" + $consolePrefix.html() + " <span id='currentLine'></span></div>");
+							}
+							
+						}, step['speed']);
+					}
 				break;
-			case 'delete':
+				case 'delete':
 				break;
-			case 'delay':
+				case 'delay':
 				break;
-			case 'newline':
+				case 'newline':
 				break;
+			}
+			
+			// if the last instruction (which has already been completed at this point) is the only one left, stop overall flow
+			if (instructions.length == 1) {
+				clearInterval(flow);
+			}
 		}
-	});
+		
+	}, 50);
+	
+	
+	
+	
+	
+	
+	
+	// $.each(instructions, function(index, value) {
+	// 	var step = value;
+	// 	console.log('loop');
+		
+	// 	switch(step['command']) {
+	// 		case 'type':
+	// 			if (!waiting) {
+	// 				waiting = true;
+	// 				var outputString = step['text'].split("");
+	// 				var count = 0;
+					
+	// 				var typeInterval = setInterval(function(){
+
+	// 					$('#text').append(outputString[0]);
+	// 					outputString.shift(); // Remove first index of array, each letter as it is added.
+						
+	// 					if (outputString.length == 0) { // If entire string has been appended, terminate interval.
+	// 						clearInterval(typeInterval);
+	// 						step['complete'] = true;
+	// 						waiting = false;
+	// 						debugger;
+	// 					}
+	// 					count++;
+	// 				}, step['speed']);
+	// 			}
+				
+
+				
+	// 			break;
+	// 		case 'delete':
+	// 			break;
+	// 		case 'delay':
+	// 			break;
+	// 		case 'newline':
+	// 			break;
+	// 	}
+	// });
 }
 consoleText2(testData);
