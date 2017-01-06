@@ -6,13 +6,8 @@
   clear: both; }
 
 /* MOBILE FIRST! */
-body {
-  background: black; }
-
-.hidden {
-  opacity: 0; }
-
-.console-container {
+#console {
+  background: black;
   font-family: 'Inconsolata', monospace;
   font-size: 18px;
   text-align: left;
@@ -24,7 +19,7 @@ body {
   margin: auto;
   padding: 15px; }
 
-.console-underscore {
+#cursor {
   display: inline-block;
   position: relative;
   vertical-align: text-bottom;

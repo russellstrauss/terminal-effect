@@ -1,12 +1,10 @@
 @import url(https://fonts.googleapis.com/css?family=Inconsolata);
 
 body {
+	//background: black;
+}
+#console {
 	background: black;
-}
-.hidden {
-	opacity: 0;
-}
-.console-container {
 	font-family: 'Inconsolata', monospace;
 	font-size: 18px;
 	text-align: left;
@@ -18,7 +16,7 @@ body {
 	margin: auto;
 	padding: 15px;
 }
-.console-underscore {
+#cursor {
 	display: inline-block;
 	position: relative;
 	vertical-align: text-bottom;
