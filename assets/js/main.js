@@ -2,7 +2,7 @@
 // simply create json object to control all data such as text, speed, delete, newline, then iterate through so that the ideas are all that need to form rather than getting stuck in code
 // switch statement for each type of control, i.e. speed, delay, delete, type, newline
 // Random delay in between typed characters to simulate human interaction
-
+// Instant - instantly append a message instead of typing it out
 
 var consoleData = [
 	['type', 100, 'npm install self-destruct-sequence --save'],
@@ -21,23 +21,25 @@ var consoleData = [
 // list out different pages as file in terminal
 
 var amysMessage = [
-
 	{
 		'command': 'type',
+		'addPrefix': true,
 		'speed': 200,
-		'text': 'Hello, Amy.',
+		'text': './intitiateGreeting.sh',
 		'delayBefore': 0,
 		'delayAfter': 3000
 	},
 	{
 		'command': 'type',
+		'addPrefix': false,
 		'speed': 180,
-		'text': 'My name is Russell\'s Computer.',
+		'text': 'Hello. My name is Russell\'s Computer.',
 		'delayBefore': 1000,
 		'delayAfter': 3000
 	},
 	{
 		'command': 'type',
+		'addPrefix': false,
 		'speed': 50,
 		'text': '00011101010101110001111000100010000111110101010110101000110111111110111110100101101100110101101111100',
 		'delayBefore': 1000,
@@ -45,6 +47,7 @@ var amysMessage = [
 	},
 	{
 		'command': 'type',
+		'addPrefix': false,
 		'speed': 100,
 		'text': 'That is computerese for "I hope you have a lovely day tomorrow."',
 		'delayBefore': 1000,
@@ -52,6 +55,7 @@ var amysMessage = [
 	},
 	{
 		'command': 'type',
+		'addPrefix': false,
 		'speed': 100,
 		'text': 'Now if you\'ll excuse me, I\'ll be surfing on a wave of juice I like to call the Internet.',
 		'delayBefore': 1000,
@@ -59,12 +63,34 @@ var amysMessage = [
 	},
 	{
 		'command': 'type',
+		'addPrefix': false,
 		'speed': 0,
 		'text': 'Conversation terminated, Ctrl+Q to exit.',
 		'delayBefore': 1000,
 		'delayAfter': 0
 	}
 ]
+
+// Adds markup that represents a new command or program run.
+// addCommandLinePrefix: true or false. If the newline is not a command, the command line prefix will remove the prefix markup, emulating a program running
+var newline = function(addCommandLinePrefix){
+	var $newlineMarkup = '<div class="current-line">' +
+							'<span class="prefix">motherbrain:~ rstrauss$ </span>' +
+							'<span id="currentText"></span><div id="cursor">&#9608;</div>' +
+						'</div>';
+	$newlineMarkup = $($newlineMarkup);
+	if (!addCommandLinePrefix) $newlineMarkup.find('.prefix').remove();
+	var $prevLine = $('.current-line');
+	$prevLine.removeAttr('class');
+	$prevLine.find('#cursor').remove();
+	$prevLine.find('#currentText').removeAttr('id');
+	$('.current-line').find('#currentText').html('');
+	$('#console').append($newlineMarkup);
+}
+// Adds markup that represents a script running meaning it doesn't attach the command line prefix.
+var runProgram = function() {
+	
+}
 
 var consoleText = function(instructions) {
 	
@@ -95,13 +121,7 @@ var consoleText = function(instructions) {
 								setTimeout(function(){ // By setting a timeout on changing the waiting to false, you are keeping everything from running as setInterval continues to loop
 									waiting = false;
 									
-									// Duplicate content and remove ID's to initiate next line
-									var $prevLine = $('.current-line');
-									var $newLine = $('#console').append($prevLine.clone());
-									$prevLine.find('#cursor').remove();
-									$prevLine.removeAttr('class');
-									$prevLine.find('#currentText').removeAttr('id');
-									$newLine.find('#currentText').html('');
+									newline(step['addPrefix']);
 									
 								}, step['delayAfter']);
 							}
