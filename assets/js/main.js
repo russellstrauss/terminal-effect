@@ -12,22 +12,57 @@ var consoleData = [
 	['newline']
 ]
 
+// Greetings, Human. What business do you have in this port? Are you looking for Russell? He is not here. I am his server, how may I help you?
+// Press 'h' for help.
+// *help menu with different options*
+// CD - change directory; I'm sorry, I can't let you do that.
+// Ctrl+X to exit
+// open files
+// list out different pages as file in terminal
 
-var testData = [
+var amysMessage = [
 
 	{
 		'command': 'type',
 		'speed': 200,
-		'text': 'Hello world',
-		'complete': false,
+		'text': 'Hello, Amy.',
+		'delayBefore': 0,
 		'delayAfter': 3000
 	},
 	{
 		'command': 'type',
-		'speed': 200,
-		'text': 'Go again',
-		'complete': false, // use setInterval to repeatedly run until complete, then shift() to remove that item from the stack
+		'speed': 180,
+		'text': 'My name is Russell\'s Computer.',
+		'delayBefore': 1000,
 		'delayAfter': 3000
+	},
+	{
+		'command': 'type',
+		'speed': 50,
+		'text': '00011101010101110001111000100010000111110101010110101000110111111110111110100101101100110101101111100',
+		'delayBefore': 1000,
+		'delayAfter': 3000
+	},
+	{
+		'command': 'type',
+		'speed': 100,
+		'text': 'That is computerese for "I hope you have a lovely day tomorrow."',
+		'delayBefore': 1000,
+		'delayAfter': 3000
+	},
+	{
+		'command': 'type',
+		'speed': 100,
+		'text': 'Now if you\'ll excuse me, I\'ll be surfing on a wave of juice I like to call the Internet.',
+		'delayBefore': 1000,
+		'delayAfter': 3000
+	},
+	{
+		'command': 'type',
+		'speed': 0,
+		'text': 'Conversation terminated, Ctrl+Q to exit.',
+		'delayBefore': 1000,
+		'delayAfter': 0
 	}
 ]
 
@@ -43,8 +78,8 @@ var consoleText = function(instructions) {
 						
 			switch(step['command']) {
 				case 'type':
+					
 					if (!waiting) {
-						
 						waiting = true;
 						var outputString = step['text'].split("");
 						
@@ -55,7 +90,6 @@ var consoleText = function(instructions) {
 							
 							if (outputString.length == 0) { // If entire string has been appended, terminate interval.
 									clearInterval(typeInterval);
-									step['complete'] = true;
 									instructions.shift();
 								
 								setTimeout(function(){ // By setting a timeout on changing the waiting to false, you are keeping everything from running as setInterval continues to loop
@@ -91,4 +125,5 @@ var consoleText = function(instructions) {
 		
 	}, 50);
 }
-consoleText(testData);
+
+consoleText(amysMessage);
