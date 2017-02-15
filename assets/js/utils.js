@@ -28,13 +28,13 @@ var generateRecentLogin = function() {
 	monthNames[10] = "Nov";
 	monthNames[11] = "Dec";
 	
-	// Generate a recent random date/time within the last three days.
+	// Generate a recent random date/time within the last three days.	
 	var date = new Date();
 	date.setDate(date.getDate() - random(1,3));
 	date.setHours(date.getHours() - random(1, 12));
 	var day = date.getDay();
 	
-	day = weekday[day-1];
+	day = weekday[day];
 	var month = date.getMonth();
 	
 	var result = day + " " + monthNames[date.getMonth()] + " " + date.getDay() + " " + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();

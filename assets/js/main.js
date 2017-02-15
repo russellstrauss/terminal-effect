@@ -5,7 +5,7 @@
 // Instant - instantly append a message instead of typing it out
 
 var consoleData = [
-	['type', 100, 'npm install self-destruct-sequence --save'],
+	['type', 100, 'npm install self-destruct-sequence'],
 	['delay', 3000],
 	['delete', 30],
 	['type', 100, 'gulp --save-dev'],
@@ -25,50 +25,80 @@ var amysMessage = [
 		'command': 'type',
 		'addPrefix': true,
 		'speed': 200,
-		'text': './intitiateGreeting.sh',
+		'text': './intitiateGreetinghb.sh',
 		'delayBefore': 0,
 		'delayAfter': 3000
+	},
+	{
+		'command': 'delete',
+		'deleteLength': 5,
+		'speed': 100,
+		'delayAfter': 3000
+	},
+	{
+		'command': 'type',
+		'addPrefix': true,
+		'speed': 200,
+		'text': '.sh',
+		'delayBefore': 0,
+		'delayAfter': 3000
+	},
+	{
+		'command': 'newline',
+		'addPrefix': true
 	},
 	{
 		'command': 'type',
 		'addPrefix': false,
 		'speed': 180,
-		'text': 'Hello. My name is Russell\'s Computer.',
-		'delayBefore': 1000,
-		'delayAfter': 3000
-	},
-	{
-		'command': 'type',
-		'addPrefix': false,
-		'speed': 50,
-		'text': '00011101010101110001111000100010000111110101010110101000110111111110111110100101101100110101101111100',
-		'delayBefore': 1000,
-		'delayAfter': 3000
-	},
-	{
-		'command': 'type',
-		'addPrefix': false,
-		'speed': 100,
-		'text': 'That is computerese for "I hope you have a lovely day tomorrow."',
-		'delayBefore': 1000,
-		'delayAfter': 3000
-	},
-	{
-		'command': 'type',
-		'addPrefix': false,
-		'speed': 100,
-		'text': 'Now if you\'ll excuse me, I\'ll be surfing on a wave of juice I like to call the Internet.',
-		'delayBefore': 1000,
-		'delayAfter': 3000
-	},
-	{
-		'command': 'type',
-		'addPrefix': false,
-		'speed': 0,
-		'text': 'Conversation terminated, Ctrl+Q to exit.',
+		'text': 'last',
 		'delayBefore': 1000,
 		'delayAfter': 0
+	},
+	{
+		'command': 'newline',
+		'addPrefix': false
 	}
+	// {
+	// 	'command': 'type',
+	// 	'addPrefix': false,
+	// 	'speed': 180,
+	// 	'text': 'Hello. My name is Russell\'s Computer.',
+	// 	'delayBefore': 1000,
+	// 	'delayAfter': 3000
+	// },
+	// {
+	// 	'command': 'type',
+	// 	'addPrefix': false,
+	// 	'speed': 50,
+	// 	'text': '00011101010101110001111000100010000111110101010110101000110111111110111110100101101100110101101111100',
+	// 	'delayBefore': 1000,
+	// 	'delayAfter': 3000
+	// },
+	// {
+	// 	'command': 'type',
+	// 	'addPrefix': false,
+	// 	'speed': 100,
+	// 	'text': 'That is computerese for "I hope you have a lovely day tomorrow."',
+	// 	'delayBefore': 1000,
+	// 	'delayAfter': 3000
+	// },
+	// {
+	// 	'command': 'type',
+	// 	'addPrefix': false,
+	// 	'speed': 100,
+	// 	'text': 'Now if you\'ll excuse me, I\'ll be surfing on a wave of juice I like to call the Internet.',
+	// 	'delayBefore': 1000,
+	// 	'delayAfter': 3000
+	// },
+	// {
+	// 	'command': 'type',
+	// 	'addPrefix': false,
+	// 	'speed': 0,
+	// 	'text': 'Conversation terminated, Ctrl+Q to exit.',
+	// 	'delayBefore': 1000,
+	// 	'delayAfter': 0
+	// }
 ]
 
 // Adds markup that represents a new command or program run.
@@ -94,11 +124,16 @@ var runProgram = function() {
 
 var consoleText = function(instructions) {
 	
-	var waiting = false;
+	var waiting = false; // controls the flow of execution
 	
 	var flow = setInterval(function(){
 		
 		if (!waiting) {
+			
+			if (instructions.length <= 0) {
+				clearInterval(flow); // If instructions array is empty, terminate flow.
+				return false;
+			}
 			
 			var step = instructions[0];
 						
@@ -116,12 +151,13 @@ var consoleText = function(instructions) {
 							
 							if (outputString.length == 0) { // If entire string has been appended, terminate interval.
 									clearInterval(typeInterval);
-									instructions.shift();
+									instructions.shift(); // go to next instruction step
 								
 								setTimeout(function(){ // By setting a timeout on changing the waiting to false, you are keeping everything from running as setInterval continues to loop
 									waiting = false;
 									
-									newline(step['addPrefix']);
+									// Add to separate command so that you can delete characters before breaking to newline
+									//newline(step['addPrefix']);
 									
 								}, step['delayAfter']);
 							}
@@ -130,16 +166,33 @@ var consoleText = function(instructions) {
 					}
 				break;
 				case 'delete':
+					if (!waiting) {
+						waiting = true;
+						var loopCount = 1;
+						var deleteInterval = setInterval(function(){
+							if (loopCount >= step['deleteLength']) { // If delete length has been reached, terminate interval
+								clearInterval(deleteInterval);
+								instructions.shift();
+								
+								setTimeout(function(){ // Add a delay after deletion complete
+									waiting = false;
+								}, step['delayAfter']);
+							}
+							
+							// delete the last character
+							var content = $('#currentText').text();
+							$('#currentText').text(content.slice(0,-1));
+							
+							loopCount++;
+						}, step['speed']);
+					}
 				break;
 				case 'delay':
 				break;
 				case 'newline':
+					newline(step['addPrefix']);
+					instructions.shift();
 				break;
-			}
-			
-			// if the last instruction is the only one left (which has already been completed at this point), stop overall flow
-			if (instructions.length == 1) {
-				clearInterval(flow);
 			}
 		}
 		
