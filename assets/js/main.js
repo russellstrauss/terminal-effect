@@ -27,13 +27,13 @@ var amysMessage = [
 		'speed': 200,
 		'text': './intitiateGreetinghb.sh',
 		'delayBefore': 0,
-		'delayAfter': 3000
+		'delayAfter': 0
 	},
 	{
 		'command': 'delete',
 		'deleteLength': 5,
 		'speed': 100,
-		'delayAfter': 3000
+		'delayAfter': 0
 	},
 	{
 		'command': 'type',
