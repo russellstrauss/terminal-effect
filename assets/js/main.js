@@ -122,6 +122,9 @@ var runProgram = function() {
 	
 }
 
+// BUGS: Date sometimes says '0': Apr 0, 2017
+// Consider using date then subtracting a random range of seconds +/- 10000000000 seconds, then display date info
+
 var consoleText = function(instructions) {
 	
 	var waiting = false; // controls the flow of execution
